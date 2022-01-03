@@ -1,39 +1,42 @@
-import numpy as np 
-import pandas as pd 
-import matplotlib.pyplot as plt
-from pandas.plotting import lag_plot
-from pandas import datetime
-from statsmodels.tsa.arima.model import ARIMA
-from sklearn.metrics import mean_squared_error
+# https://medium.com/codex/algorithmic-trading-with-average-directional-index-in-python-2b5a20ecf06a
+# https://school.stockcharts.com/doku.php?id=technical_indicators:average_directional_index_adx
+# https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.ADXIndicator
 
-df = pd.read_csv("AAPL.csv")
+import pandas as pd
+from ta.utils import dropna
 
-plt.plot(df["Date"], df["Close"])
-plt.xlabel("time")
-plt.ylabel("price")
-plt.show()
+import tkinter as tk
+from gui import app
 
-train_data, test_data = df[0:int(len(df)*0.7)], df[int(len(df)*0.7):]
-training_data = train_data['Close'].values
-test_data = test_data['Close'].values
-history = [x for x in training_data]
-model_predictions = []
-N_test_observations = len(test_data)
-for time_point in range(N_test_observations):
-    model = ARIMA(history, order=(4,1,0))
-    model_fit = model.fit()
-    output = model_fit.forecast()
-    yhat = output[0]
-    model_predictions.append(yhat)
-    true_test_value = test_data[time_point]
-    history.append(true_test_value)
-MSE_error = mean_squared_error(test_data, model_predictions)
-print('Testing Mean Squared Error is {}'.format(MSE_error))
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.backend_bases import key_press_handler
+from matplotlib.figure import Figure
 
-test_set_range = df[int(len(df)*0.7):].index
-plt.plot(test_set_range, model_predictions, color='blue', marker='o', linestyle='dashed',label='Predicted Price')
-plt.plot(test_set_range, test_data, color='red', label='Actual Price')
-plt.xlabel('Date')
-plt.ylabel('Prices')
-plt.legend()
-plt.show()
+import numpy as np
+
+
+# root = tkinter.Tk()
+# root.wm_title("Embedding in Tk")
+#
+# fig = Figure(figsize=(5, 4), dpi=100)
+# t = np.arange(0, 3, .01)
+#
+# ax = fig.add_subplot(111)
+#
+# ax = df["close"].plot(ax=ax)
+#
+# canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+# canvas.draw()
+# canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+
+
+def _quit():
+    root.quit()
+    root.destroy()
+
+
+# button = tkinter.Button(master=root, text="Quit", command=_quit)
+# button.pack(side=tkinter.BOTTOM)
+# tkinter.mainloop()
+
