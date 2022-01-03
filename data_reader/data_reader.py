@@ -24,6 +24,3 @@ class DataReader:
             self._send_data_request()
         df = pd.read_csv(path)
         return df
-
-    def __init__(self, api_key):
-        self.api_key = api_key

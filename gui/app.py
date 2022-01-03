@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from charter import charter
 
 import numpy as np
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
@@ -17,7 +18,7 @@ class App(tk.Frame):
 
         # Create the application variable.
         self.contents = tk.StringVar()
-        self.contents.set("this is a variable")
+        self.contents.set("GOOGL")
         # Tell the entry widget to watch this variable.
         self.entrythingy["textvariable"] = self.contents
 
@@ -26,14 +27,19 @@ class App(tk.Frame):
         self.entrythingy.bind('<Key-Return>',
                              self.print_contents)
 
+        self.btn_add_chart = tk.Button(master=self.master, text="Load stock", command=self.add_chart)
+        self.btn_add_chart.pack()
+
     def print_contents(self, event):
         print("Hi. The current entry content is:",
               self.contents.get())
 
     def add_chart(self):
         fig = Figure(figsize=(5, 4), dpi=100)
-        t = np.arange(0, 3, .01)
-        fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
+        ax = fig.add_subplot(111)
+
+        chr = charter.Charter(self.contents.get())
+        chr.get_plot(ax)
 
         canvas = FigureCanvasTkAgg(fig, master=self.master)  # A tk.DrawingArea.
         canvas.draw()
@@ -43,16 +49,7 @@ class App(tk.Frame):
         toolbar.update()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-        def _quit():
-            root.quit()  # stops mainloop
-            root.destroy()  # this is necessary on Windows to prevent
-            # Fatal Python Error: PyEval_RestoreThread: NULL tstate
-
-        button = tk.Button(master=self.master, text="Quit", command=_quit)
-        button.pack(side=tk.BOTTOM)
-
 
 root = tk.Tk()
 myapp = App(root)
-myapp.add_chart()
 myapp.mainloop()
