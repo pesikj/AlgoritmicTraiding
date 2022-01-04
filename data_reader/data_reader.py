@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import os
+from ta import trend
 
 DATA_FOLDER = "data"
 
@@ -23,4 +24,11 @@ class DataReader:
         if not os.path.isfile(path):
             self._send_data_request()
         df = pd.read_csv(path)
+        return df
+
+    def get_adx(self, symbol):
+        df = self.get_dataframe(symbol)
+        df["adx"] = trend.adx(high=df["high"], low=df["low"], close=df["close"])
+        df["adx_neg"] = trend.adx_neg(high=df["high"], low=df["low"], close=df["close"])
+        df["adx_pos"] = trend.adx_pos(high=df["high"], low=df["low"], close=df["close"])
         return df

@@ -6,10 +6,8 @@ class Charter:
     data_frame: pd.DataFrame
     symbol: str
 
-    def __init__(self, symbol):
-        self.symbol = symbol
-        dr = data_reader.DataReader()
-        self.data_frame = dr.get_dataframe("GOOGL")
+    def __init__(self):
+        pass
 
-    def get_plot(self, ax):
-        self.data_frame["close"].plot(ax=ax)
+    def get_data_frame(self):
+        pass

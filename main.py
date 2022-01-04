@@ -30,12 +30,6 @@ import numpy as np
 # canvas.draw()
 # canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-
-def _quit():
-    root.quit()
-    root.destroy()
-
-
 # button = tkinter.Button(master=root, text="Quit", command=_quit)
 # button.pack(side=tkinter.BOTTOM)
 # tkinter.mainloop()
