@@ -9,6 +9,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 from data_reader.data_reader import DataReader
+from stock_analyzer import stock_analyzer
 
 
 class ChartFrame(tk.Frame):
@@ -44,11 +45,20 @@ class ChartFrame(tk.Frame):
 
     def add_chart(self):
         self.fig.clf()
-        aapl = self.data_reader.get_adx(self.contents.get())
+        df = self.data_reader.get_dataframe(self.contents.get())
+        sa = stock_analyzer.StockAnalyzer(self.contents.get(), df)
+        aapl = sa.add_adx_indicator()
 
         ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1, fig=self.fig)
         ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1, fig=self.fig)
-        ax1.plot(aapl['close'], linewidth=2, color='#ff9800')
+        ax1.plot(aapl["datetime"], aapl['close'], linewidth=2, color='#ff9800')
+
+        df_buy = df[df["signal_buy"]]
+        ax1.plot(df_buy["datetime"], df_buy['close'], marker='^', color='#26a69a', markersize=14, linewidth=0, label='BUY SIGNAL')
+
+        df_sell = df[df["signal_sell"]]
+        ax1.plot(df_sell["datetime"], df_sell['close'], marker = 'v', color = '#f44336', markersize = 14, linewidth = 0, label = 'SELL SIGNAL')
+
         ax1.set_title('AAPL CLOSING PRICE')
 
         ax2.plot(aapl['adx_neg'], color='#26a69a', label='+ DI 14', linewidth=3, alpha=0.3)
