@@ -2,13 +2,15 @@ import numpy as np
 import pandas as pd
 from ta.trend import ADXIndicator
 
+from data_reader.data_reader import DataReader
+
 
 class StockAnalyzer:
     symbol: str
     data: pd.DataFrame
 
-    def add_adx_indicator(self):
-        df = self.df
+    def adx_indicator(self):
+        df = self.data_reader.get_dataframe(self.symbol)
         indicator_adx = ADXIndicator(high=df["high"], low=df["low"], close=df["close"])
         df["adx"] = indicator_adx.adx()
         df["adx_pos"] = indicator_adx.adx_pos()
@@ -24,6 +26,6 @@ class StockAnalyzer:
             True, False)
         return df
 
-    def __init__(self, symbol, df):
+    def __init__(self, symbol):
         self.symbol = symbol
-        self.df = df
+        self.data_reader = DataReader()
